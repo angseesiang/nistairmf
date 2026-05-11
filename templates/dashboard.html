@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>Status Update Chat</h2>
+  <form method="post" action="{{ url_for('chat_update') }}">
+    <label>Enter your status update prompt</label>
+    <textarea name="prompt" rows="4" required></textarea>
+    <button type="submit">Submit Prompt</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Your Prompt History & Mapped Categories</h3>
+  <table>
+    <tr><th>Timestamp</th><th>Prompt</th><th>NIST Mapping</th><th>Status</th></tr>
+    {% for log in logs %}
+      <tr>
+        <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ log.prompt }}</td>
+        <td>{{ log.mapped_category }}</td>
+        <td>{{ log.status_update }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4">No prompt submitted yet.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}
+

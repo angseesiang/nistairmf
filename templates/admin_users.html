@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>Create Account</h2>
+  <form method="post" action="{{ url_for('admin_create_user') }}">
+    <input name="username" placeholder="Username" required>
+    <input name="password" placeholder="Password" type="password" required>
+    <select name="role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button type="submit">Create</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>User Management</h2>
+  <table>
+    <tr><th>ID</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin_edit_user', user_id=u.id) }}" class="inline-form">
+          <input name="username" value="{{ u.username }}" required>
+      </td>
+      <td>
+          <select name="role">
+            <option value="user" {% if u.role == 'user' %}selected{% endif %}>User</option>
+            <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Admin</option>
+          </select>
+      </td>
+      <td>{{ 'Active' if u.is_active_account else 'Disabled' }}</td>
+      <td>
+          <input name="password" type="password" placeholder="New password (optional)">
+          <button type="submit">Save</button>
+        </form>
+        {% if u.is_active_account %}
+          <form method="post" action="{{ url_for('admin_disable_user', user_id=u.id) }}" class="inline-form"><button type="submit">Disable</button></form>
+        {% else %}
+          <form method="post" action="{{ url_for('admin_enable_user', user_id=u.id) }}" class="inline-form"><button type="submit">Enable</button></form>
+        {% endif %}
+        <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}" class="inline-form"><button type="submit" class="danger">Delete</button></form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}
+
